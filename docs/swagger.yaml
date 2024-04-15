@@ -1,4 +1,22 @@
 definitions:
+  wallet.CreateWalletBody:
+    properties:
+      balance:
+        example: 100
+        type: number
+      user_id:
+        example: 1
+        type: integer
+      user_name:
+        example: John Doe
+        type: string
+      wallet_name:
+        example: John's Wallet
+        type: string
+      wallet_type:
+        example: Create Card
+        type: string
+    type: object
   wallet.Err:
     properties:
       message:
@@ -35,23 +53,95 @@ info:
   title: Wallet API
   version: "1.0"
 paths:
-  /api/v1/wallets:
+  /api/v1/users/{id}/wallets:
     get:
       consumes:
       - application/json
-      description: Get all wallets
+      description: Get all wallets based on given id
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        type: number
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/wallet.Wallet'
+            items:
+              $ref: '#/definitions/wallet.Wallet'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/wallet.Err'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/wallet.Err'
+      summary: Get all user wallets based on given id
+      tags:
+      - wallet
+  /api/v1/wallets:
+    get:
+      consumes:
+      - application/json
+      description: Get all wallets or wallets with given wallet type
+      parameters:
+      - description: wallet type
+        enum:
+        - Savings
+        - Crypto Wallet
+        - Credit Card
+        in: query
+        name: wallet_type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/wallet.Wallet'
+            type: array
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/wallet.Err'
       summary: Get all wallets
+      tags:
+      - wallet
+    post:
+      consumes:
+      - application/json
+      description: Create a wallet
+      parameters:
+      - description: Wallet
+        in: body
+        name: wallet
+        required: true
+        schema:
+          $ref: '#/definitions/wallet.CreateWalletBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/wallet.Wallet'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/wallet.Err'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/wallet.Err'
+      summary: Create a wallet
       tags:
       - wallet
 swagger: "2.0"
