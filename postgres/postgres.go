@@ -16,10 +16,6 @@ func New() (*Postgres, error) {
 	databaseSource := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable", "localhost", 5432, "root", "password", "wallet")
 	db, err := sql.Open("postgres", databaseSource)
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
